@@ -3,7 +3,6 @@ import {Card, CardContent, Typography} from "@material-ui/core";
 import {makeStyles} from "@material-ui/styles";
 import clsx from 'clsx';
 
-
 const useStyles = makeStyles({
     card: {
         maxWidth: "45%",
@@ -38,13 +37,13 @@ const useStyles = makeStyles({
     }
 })
 
-export default function Message({username, message}) {
+const Message = React.forwardRef(({username, message}, ref) => {
 
     const classes = useStyles();
     const isUser = username === message.username;
 
     return ( 
-        <div>
+        <div ref={ref}>
             {
                 !isUser &&
                     <div className={classes.userName}>{message.username}</div>
@@ -61,4 +60,6 @@ export default function Message({username, message}) {
             </Card>
         </div>
     );
-}
+});
+
+export default Message;

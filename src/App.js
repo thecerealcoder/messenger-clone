@@ -6,7 +6,7 @@ import Message from "./Message"
 import db from './firebase';
 import firebase from 'firebase';
 import {Send as SendIcon} from "@material-ui/icons";
-
+import FlipMove from 'react-flip-move';
 
 const useStyles = makeStyles({
     form: {
@@ -19,8 +19,9 @@ const useStyles = makeStyles({
         right: 0,
         left: 0,
         padding: 20,
-        background: "rgba(128,128,128,.1)",
-        borderRadius: 10
+        background: "rgba(128,128,128,.25)",
+        borderRadius: 10,
+        zIndex: 1
     }
 })
 
@@ -36,7 +37,7 @@ function App() {
         db.collection('messages')
             .orderBy('timestamp', 'desc')
             .onSnapshot((snapshot) => {
-                setMessages(snapshot.docs.map((doc) => doc.data()))
+                setMessages(snapshot.docs.map((doc) => ({id: doc.id, message: doc.data()})))
             });
     }, []);
 
@@ -48,7 +49,7 @@ function App() {
         event.preventDefault();
         db.collection('messages').add({
             message: input,
-            username: username,
+            username: username || "Anonymous",
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
         setInput('');
@@ -66,15 +67,14 @@ function App() {
                 </FormControl>
             </form>
 
-
-            {
-                messages.map((message) => (
-                    <Message
-                        username={username}
-                        message={message}
-                    />
-                ))
-            }
+            <FlipMove appearAnimation="elevator">
+                 {
+                    messages.map(({id, message}) => (
+                        <Message key={id} username={username} message={message}/>
+                    ))
+                }
+            </FlipMove>
+           
         </div>
     );
 }
