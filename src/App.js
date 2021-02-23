@@ -22,6 +22,10 @@ const useStyles = makeStyles({
         background: "rgba(128,128,128,.25)",
         borderRadius: 10,
         zIndex: 1
+    },
+    flipMove: {
+        display: "flex",
+        flexDirection: "column-reverse"
     }
 })
 
@@ -32,6 +36,8 @@ function App() {
     const [username, setUsername] = React.useState('');
 
     const classes = useStyles();
+    const scroller = React.useRef();
+
 
     React.useEffect(() => {
         db.collection('messages')
@@ -45,6 +51,10 @@ function App() {
         setUsername(prompt("Please enter your username"));
     }, []);
 
+    React.useEffect(() => {
+        scroller.current.scrollIntoView();
+    }, [messages]);
+
     const sendMessage = (event) => {
         event.preventDefault();
         db.collection('messages').add({
@@ -54,6 +64,7 @@ function App() {
         });
         setInput('');
     }
+
 
     return (
         <div className="App">
@@ -67,7 +78,7 @@ function App() {
                 </FormControl>
             </form>
 
-            <FlipMove appearAnimation="elevator">
+            <FlipMove className={classes.flipMove}>
                  {
                     messages.map(({id, message}) => (
                         <Message key={id} username={username} message={message}/>
@@ -75,6 +86,7 @@ function App() {
                 }
             </FlipMove>
            
+            <div ref={scroller} />
         </div>
     );
 }

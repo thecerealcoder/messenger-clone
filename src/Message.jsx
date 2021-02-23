@@ -23,7 +23,7 @@ const useStyles = makeStyles({
         background: "lightgrey"
     },
     userMessage: {
-        marginRight: 0,
+        marginRight: 10,
         marginLeft: "auto",
         textAlign: "left",
         color: "white",
@@ -41,14 +41,15 @@ const Message = React.forwardRef(({username, message}, ref) => {
 
     const classes = useStyles();
     const isUser = username === message.username;
+    const isAnon = message.username === "Anonymous" && !username;
 
     return ( 
         <div ref={ref}>
             {
-                !isUser &&
+                !isUser && !isAnon &&
                     <div className={classes.userName}>{message.username}</div>
             }
-            <Card className={clsx({[classes.message]: true, [classes.userMessage]: isUser})} classes={{root: classes.card}}>
+            <Card className={clsx({[classes.message]: true, [classes.userMessage]: isUser || isAnon})} classes={{root: classes.card}}>
                 <CardContent classes={{root: classes.cardContent}}>
                     <Typography
                         variant="h5"
